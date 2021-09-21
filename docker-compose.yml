@@ -1,0 +1,26 @@
+version: '3.4'
+services:
+  aidchannel_ai:
+    image: registry.data4jobs.com/aidchannel_ai:latest
+    environment:
+      - DB="mongodb://aidchannel:aidchannel_password123456@51.77.134.195:27028/aidchannel?authSource=aidchannel"
+    deploy:
+      labels:
+       - "traefik.http.routers.aidchannel_ai.rule=Host(`ai.jtsolution.org`)"
+       - "traefik.enable=true"
+       - "traefik.docker.network=public"  
+       - "traefik.http.routers.aidchannel_ai.tls.certresolver=let"
+       - "traefik.http.routers.aidchannel_ai.entrypoints=websecure"
+       - "traefik.http.services.aidchannel_ai.loadbalancer.server.port=80"
+
+      replicas: 1
+      update_config:
+        parallelism: 1
+        order: start-first
+        failure_action: rollback
+        delay: 1s
+    networks:
+      - public
+networks:
+  public:
+       external: true
