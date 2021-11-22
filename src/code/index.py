@@ -71,6 +71,15 @@ def summary(input : InputSummary):
     
     return res
 
+@app.post('/summary-desc')
+def summary_desc(input : Input):
+    req = jsonable_encoder(input)
+    text = req['text']
+    limit_phrases = 4
+    limit_sentences = 1
+    res = summarize(text, limit_phrases, limit_sentences)
+    return res
+
 def get_sect_sim(text):
     vect = model.encode(text)
     min = []
