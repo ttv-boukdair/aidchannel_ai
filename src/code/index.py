@@ -76,7 +76,7 @@ def summary_desc(input : Input):
     req = jsonable_encoder(input)
     text = req['text']
     limit_phrases = 4
-    limit_sentences = 1
+    limit_sentences = 2
     res = summarize(text, limit_phrases, limit_sentences)
     return res
 
