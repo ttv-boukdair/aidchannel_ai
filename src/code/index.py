@@ -67,10 +67,8 @@ def summary(input : InputSummary):
     text = req['text']
     limit_phrases = req['limit_phrases']
     limit_sentences = req['limit_sentences']
-    try:
-        res = summarize(text, limit_phrases, limit_sentences)
-    except:
-        res = []
+    res = summarize(text, limit_phrases, limit_sentences)
+    
     return res
 
 def get_sect_sim(text):
