@@ -8,6 +8,12 @@ from typing import Optional
 from sentence_transformers import SentenceTransformer
 import nmslib
 import numpy as np
+#SUMMARIZE
+import spacy
+import pytextrank
+from icecream import ic
+from math import sqrt
+from operator import itemgetter
 
 DB = "mongodb://aidchannel:aidchannel_password123456@51.77.134.195:27028/aidchannel?authSource=aidchannel"
 
@@ -22,6 +28,11 @@ app.add_middleware(
 class Input(BaseModel):
     text: str
 
+#summary model
+class InputSummary(BaseModel):
+    text: str
+    limit_phrases: int
+    limit_sentences: int
 
 @app.post('/sim-orgs')
 def sim_orgs(input : Input):
@@ -48,6 +59,19 @@ def sim_sect(input : Input):
     req = jsonable_encoder(input)
     text = req['text']
     res = get_sect_sim(text)
+    return res
+
+@app.post('/summary')
+def summary(input : InputSummary):
+    req = jsonable_encoder(input)
+    text = req['text']
+    limit_phrases = req['limit_phrases']
+    limit_phrases = req['limit_sentences']
+    try:
+        res = summarize(text, limit_phrases, limit_sentences)
+    except:
+        res = ''
+    
     return res
 
 def get_sect_sim(text):
@@ -110,6 +134,81 @@ def thematiques_vectors():
     return res
 
 
+
+
+#SuMMARIZE FUNC
+def summarize(text, limit_phrases, limit_sentences):
+  if text == None:
+    text =''
+  doc = nlp(text)
+  res = []
+  #Construct a list of the sentence boundaries with a phrase vector (initialized to empty set) for each...
+  sent_bounds = [ [s.start, s.end, set([])] for s in doc.sents ]
+
+  #Iterate through the top-ranked phrases, added them to the phrase vector for each sentence...
+  phrase_id = 0
+  unit_vector = []
+
+  for p in doc._.phrases:
+      ic(phrase_id, p.text, p.rank)
+
+      unit_vector.append(p.rank)
+
+      for chunk in p.chunks:
+          ic(chunk.start, chunk.end)
+
+          for sent_start, sent_end, sent_vector in sent_bounds:
+              if chunk.start >= sent_start and chunk.end <= sent_end:
+                  ic(sent_start, chunk.start, chunk.end, sent_end)
+                  sent_vector.add(phrase_id)
+                  break
+
+      phrase_id += 1
+
+      if phrase_id == limit_phrases:
+          break
+
+  sum_ranks = sum(unit_vector)
+
+  unit_vector = [ rank/sum_ranks for rank in unit_vector ]
+
+  sent_rank = {}
+  sent_id = 0
+
+  for sent_start, sent_end, sent_vector in sent_bounds:
+      ic(sent_vector)
+      sum_sq = 0.0
+      ic
+      for phrase_id in range(len(unit_vector)):
+          ic(phrase_id, unit_vector[phrase_id])
+
+          if phrase_id not in sent_vector:
+              sum_sq += unit_vector[phrase_id]**2.0
+
+      sent_rank[sent_id] = sqrt(sum_sq)
+      sent_id += 1
+
+  sorted(sent_rank.items(), key=itemgetter(1)) 
+
+  sent_text = {}
+  sent_id = 0
+
+  for sent in doc.sents:
+      sent_text[sent_id] = sent.text
+      sent_id += 1
+
+  num_sent = 0
+
+  for sent_id, rank in sorted(sent_rank.items(), key=itemgetter(1)):
+      res.append(sent_text[sent_id])
+      num_sent += 1
+
+      if num_sent == limit_sentences:
+          break
+  return res
+
+
+
 if __name__ == '__main__':
     model = SentenceTransformer('paraphrase-multilingual-mpnet-base-v2')
     descs = ['description', 'beneficiaries', 'objectives']
@@ -121,4 +220,6 @@ if __name__ == '__main__':
     index.createIndex({'post': 2}, print_progress=True)
     thematiques = ['Agriculture & Rural Development','Energy','Environment & Natural Resources','Global Health','Economic Development','Infrastructure','Gouvernance, Human Rights, Democracy, Public Sector','Education','Finance','Digital, Innovation','Humanitarian Assistance','Water & Sanitation','Urban Development & Transportation']
     thems_vects = thematiques_vectors()
+    nlp = spacy.load('en_core_web_trf')
+    nlp.add_pipe("textrank", last=True)
     uvicorn.run(app, host='0.0.0.0',port = 80)
