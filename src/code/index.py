@@ -66,7 +66,7 @@ def summary(input : InputSummary):
     req = jsonable_encoder(input)
     text = req['text']
     limit_phrases = req['limit_phrases']
-    limit_phrases = req['limit_sentences']
+    limit_sentences = req['limit_sentences']
     res = summarize(text, limit_phrases, limit_sentences)
     
     
