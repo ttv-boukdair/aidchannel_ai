@@ -87,6 +87,8 @@ def summary(input : InputSummary):
 def summary_desc(input : Input):
     req = jsonable_encoder(input)
     ARTICLE_TO_SUMMARIZE  = (req['text'])
+    if len(ARTICLE_TO_SUMMARIZE) > 1024:
+        ARTICLE_TO_SUMMARIZE = ARTICLE_TO_SUMMARIZE[:1024]
     inputs = tokenizer(ARTICLE_TO_SUMMARIZE, max_length=1024, return_tensors="pt")
     summary_ids = model_sum.generate(inputs["input_ids"], num_beams=4)
     res = tokenizer.batch_decode(summary_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)
