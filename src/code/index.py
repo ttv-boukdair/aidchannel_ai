@@ -14,6 +14,9 @@ import pytextrank
 from icecream import ic
 from math import sqrt
 from operator import itemgetter
+#SUMMARIZE MODEL
+from sentence_transformers import SentenceTransformer
+from transformers import PegasusTokenizer, PegasusForConditionalGeneration
 
 DB = "mongodb://aidchannel:aidchannel_password123456@51.77.134.195:27028/aidchannel?authSource=aidchannel"
 
@@ -71,13 +74,22 @@ def summary(input : InputSummary):
     
     return res
 
+# @app.post('/summary-desc')
+# def summary_desc(input : Input):
+#     req = jsonable_encoder(input)
+#     text = req['text']
+#     limit_phrases = 4
+#     limit_sentences = 2
+#     res = summarize(text, limit_phrases, limit_sentences)
+#     return res
+
 @app.post('/summary-desc')
 def summary_desc(input : Input):
     req = jsonable_encoder(input)
-    text = req['text']
-    limit_phrases = 4
-    limit_sentences = 2
-    res = summarize(text, limit_phrases, limit_sentences)
+    ARTICLE_TO_SUMMARIZE  = (req['text'])
+    inputs = tokenizer(ARTICLE_TO_SUMMARIZE, max_length=1024, return_tensors="pt")
+    summary_ids = model_sum.generate(inputs["input_ids"], num_beams=4)
+    res = tokenizer.batch_decode(summary_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)
     return res
 
 def get_sect_sim(text):
@@ -217,6 +229,8 @@ def summarize(text, limit_phrases, limit_sentences):
 
 if __name__ == '__main__':
     model = SentenceTransformer('paraphrase-multilingual-mpnet-base-v2')
+    model_sum = PegasusForConditionalGeneration.from_pretrained("google/pegasus-xsum")
+    tokenizer = PegasusTokenizer.from_pretrained("google/pegasus-xsum")
     descs = ['description', 'beneficiaries', 'objectives']
     orgs = getOrgs()
     descs_encoded = encodeDescs()
