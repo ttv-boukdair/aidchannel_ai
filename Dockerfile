@@ -23,5 +23,6 @@ RUN python3 -m pip install pymongo
 RUN python3 -m pip install -U spacy
 RUN python3 -m spacy download en_core_web_trf
 RUN python3 -m pip install -U pytextrank
+RUN python3 -m pip install protobuf
 COPY ./src /www/
 CMD ["python3","/www/code/index.py"]
