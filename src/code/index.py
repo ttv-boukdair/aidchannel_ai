@@ -62,7 +62,7 @@ def format_res(ids, dis, umtc_jobs):
 
 if __name__ == '__main__':
     model = SentenceTransformer('dangvantuan/sentence-camembert-large')
-    client = pymongo.MongoClient(l)
+    client = MongoClient(l)
     db = client.programmes
     umtc = getUMTC()
     umtc_jobs, umtc_jobs_vectors = vectorizeJobs()
