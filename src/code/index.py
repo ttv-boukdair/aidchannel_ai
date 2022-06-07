@@ -29,8 +29,8 @@ class InputSummary(BaseModel):
     limit_phrases: int
     limit_sentences: int
 
-@app.post('/')
-def sim_orgs():
+@app.get('/')
+def hello():
     return 'hello world'
 
 
