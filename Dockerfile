@@ -1,10 +1,11 @@
 FROM ubuntu:20.04
 
 RUN apt-get update -y
+RUN apt update -y
 RUN apt-get install -y build-essential
 RUN apt-get install -y python3.7
 RUN apt-get install -y git
-RUN apt-get install -y protobuf-compiler
+RUN apt install -y protobuf-compiler
 WORKDIR /www
 RUN apt install -y python3-pip
 RUN python3 -m pip install --upgrade pip
