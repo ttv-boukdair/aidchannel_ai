@@ -53,7 +53,7 @@ def normalize_tunisie_utmc():
 
         if len(offers):
             id, title = offers[0]
-            cur.execute("UPDATE data.offer SET data.offer.config_normalization_processing=True WHERE data.offer.id = "+id+";")
+            cur.execute("UPDATE data.offer SET data.offer.config_normalization_processing=True WHERE data.offer.id = "+str(id)+";")
             conn.commit()
             # normalize offer return id job_designation degre
 
@@ -63,10 +63,10 @@ def normalize_tunisie_utmc():
                 rtmc_job_designation_id,rtmc_job_designation_title,config_normalized_degre=res[0]
 
                 # update offer(rtmc_job_designation_id, degre, is_normalized = True)
-                cur.execute("UPDATE data.offer SET data.offer.rtmc_job_designation_id="+rtmc_job_designation_id+",data.offer.config_is_normalized=True, data.offer.config_normalized_degre="+config_normalized_degre+",data.offer.config_normalization_processing=False WHERE data.offer.id = "+id+";")
+                cur.execute("UPDATE data.offer SET data.offer.rtmc_job_designation_id="+str(rtmc_job_designation_id)+",data.offer.config_is_normalized=True, data.offer.config_normalized_degre="+str(config_normalized_degre)+",data.offer.config_normalization_processing=False WHERE data.offer.id = "+str(id)+";")
             else:
                 # in case there is a normalization pb update this field config_normalization_error with True
-                cur.execute("UPDATE data.offer SET data.offer.config_normalization_error=True,data.offer.config_normalization_processing=False WHERE data.offer.id = "+id+";")
+                cur.execute("UPDATE data.offer SET data.offer.config_normalization_error=True,data.offer.config_normalization_processing=False WHERE data.offer.id = "+str(id)+";")
             conn.commit()
 
 
