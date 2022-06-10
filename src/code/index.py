@@ -47,18 +47,18 @@ def normalize_tunisie_utmc():
     cur = conn.cursor()
     while True:
         # get offer from db
-        # SELECT id, title FROM data.offer
-        # WHERE data.offer.rtmc_job_designation_id IS NULL
-        # order by data.offer.id desc
-        # limit 1;
         cur.execute("""SELECT id,title FROM data.offer
-                        WHERE data.offer.config_is_normalized = False AND config_normalization_error = False
+                        WHERE data.offer.config_is_normalized = False AND data.offer.config_normalization_error = False AND data.offer.config_normalization_processing = False
                         order by data.offer.id desc
                         limit 1;""")
         offers = cur.fetchall()
+
         if len(offers):
             id, title = offers[0]
-        
+            cur.execute("""UPDATE data.offer
+                        SET data.offer.config_normalization_processing={True}
+                        WHERE data.offer.id = {id};""")
+            conn.commit()
             # normalize offer return id job_designation degre
 
             ids, dis = get_cos_sim(title, model, index, 1)
@@ -67,18 +67,16 @@ def normalize_tunisie_utmc():
                 rtmc_job_designation_id,rtmc_job_designation_title,config_normalized_degre=res[0]
 
                 # update offer(rtmc_job_designation_id, degre, is_normalized = True)
-                #UPDATE data.offer
-	            #SET rtmc_job_designation_id=?,config_is_normalized=?, config_normalized_degre=?
-	            #WHERE data.offer.id = id;
                 cur.execute("""UPDATE data.offer
-                        SET rtmc_job_designation_id={rtmc_job_designation_id},config_is_normalized={True}, config_normalized_degre={config_normalized_degre}
+                        SET data.offer.rtmc_job_designation_id={rtmc_job_designation_id},data.offer.config_is_normalized={True}, data.offer.config_normalized_degre={config_normalized_degre},data.offer.config_normalization_processing={False}
                         WHERE data.offer.id = {id};""")
             else:
                 # in case there is a normalization pb update this field config_normalization_error with True
                 cur.execute("""UPDATE data.offer
-                        SET config_normalization_error={True}
+                        SET data.offer.config_normalization_error={True},data.offer.config_normalization_processing={False}
                         WHERE data.offer.id = {id};""")
             conn.commit()
+
 
     return ''
 
