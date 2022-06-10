@@ -96,7 +96,7 @@ def format_res(ids, dis, umtc):
 
 if __name__ == '__main__':
     model = SentenceTransformer('dangvantuan/sentence-camembert-large')
-    conn = psycopg2.connect(host=pg_host,port=pg_port, dbname=pg_database, user=pg_user, password=pg_password)
+    conn = psycopg2.connect(host=pg_host,port=pg_port, dbname=pg_database, user=pg_user, password=pg_password,keepalives=1,keepalives_idle=130,keepalives_interval=10,keepalives_count=15)
     umtc = getUMTC()
     umtc_jobs_vectors = vectorizeJobs()
     index = nmslib.init(method='hnsw', space='cosinesimil')
