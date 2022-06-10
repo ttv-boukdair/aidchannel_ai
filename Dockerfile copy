@@ -3,7 +3,7 @@ FROM ubuntu:20.04
 RUN apt-get update -y
 RUN apt update -y
 RUN apt-get install -y build-essential
-RUN apt-get install -y python3-dev libpq-dev
+RUN apt-get install -y python3.7
 RUN apt install -y protobuf-compiler
 WORKDIR /www
 RUN apt install -y python3-pip
@@ -24,6 +24,6 @@ RUN python3 -m pip install -U spacy
 RUN python3 -m spacy download en_core_web_trf
 RUN python3 -m pip install -U pytextrank
 RUN python3 -m pip install protobuf==3.20.1
-RUN python3 -m pip install psycopg2-binary
+RUN python3 -m pip install psycopg2
 COPY ./src /www/
 CMD ["python3","/www/code/index.py"]
