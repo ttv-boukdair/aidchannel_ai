@@ -3,7 +3,7 @@ FROM ubuntu:20.04
 RUN apt-get update -y
 RUN apt update -y
 RUN apt-get install -y build-essential
-RUN apt-get install -y python3-dev libpq-dev
+RUN apt-get install -y python3.7
 RUN apt install -y protobuf-compiler
 WORKDIR /www
 RUN apt install -y python3-pip
