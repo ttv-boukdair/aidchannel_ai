@@ -7,7 +7,7 @@ from typing import Optional
 from sentence_transformers import SentenceTransformer
 import nmslib
 import psycopg2
-
+import time
 
 
 pg_user= 'postgres'
@@ -68,6 +68,8 @@ def normalize_tunisie_utmc():
                 # in case there is a normalization pb update this field config_normalization_error with True
                 cur.execute("UPDATE data.offer SET config_normalization_error=True,config_normalization_processing=False WHERE id = "+str(id)+";")
             conn.commit()
+        else:
+            time.sleep(300)
 
 
     return ''
