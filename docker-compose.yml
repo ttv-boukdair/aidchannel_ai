@@ -1,7 +1,7 @@
 version: '3.4'
 services:
   aidchannel_ai:
-    image: https://registry2.jtsolution.org/aidchannel_ai:latest
+    image: registry2.jtsolution.org/aidchannel_ai:latest
     environment:
       - DB="mongodb://aidchannel:aidchannel_password123456@51.77.134.195:27028/aidchannel?authSource=aidchannel"
     deploy:
