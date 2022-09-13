@@ -20,7 +20,7 @@ node {
         /* 
 			You would need to first register with DockerHub before you can push images to your account
 		*/
-        docker.withRegistry('https://registry.data4jobs.com', 'registory_login') {
+        docker.withRegistry('https://registry2.jtsolution.org', 'registory_login') {
             app.push("${env.BUILD_NUMBER}")
             app.push("latest")
             } 
