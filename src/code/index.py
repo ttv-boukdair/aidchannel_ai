@@ -57,7 +57,7 @@ def getRTMC():
     cur_rtmc_appellations = db.rtmcappelations.find({})
     for appellation in cur_rtmc_appellations:
         rtmc_jobs_appellations.append(appellation)
-    return rtmc
+    return rtmc_jobs_appellations
 
 def vectorizeJobs():
     rtmc_jobs_vectors = [model.encode(r.name) for r in rtmc]
