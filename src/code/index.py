@@ -60,7 +60,7 @@ def getRTMC():
     return rtmc_jobs_appellations
 
 def vectorizeJobs():
-    rtmc_jobs_vectors = [model.encode(r.name) for r in rtmc]
+    rtmc_jobs_vectors = [model.encode(r['name']) for r in rtmc]
     return rtmc_jobs_vectors
 
 def get_cos_sim(text, model, index, k):
@@ -71,7 +71,7 @@ def get_cos_sim(text, model, index, k):
 def format_res(ids, dis, rtmc):
     formated_res = []
     for i in range(len(ids)):
-        formated_res.append([rtmc[ids[i]]._id, rtmc[ids[i]].name, dis[i]])
+        formated_res.append([rtmc[ids[i]]['_id'], rtmc[ids[i]]['name'], dis[i]])
     return formated_res
 
 if __name__ == '__main__':
