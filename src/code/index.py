@@ -75,13 +75,16 @@ def format_res(ids, dis, rtmc):
     return formated_res
 
 if __name__ == '__main__':
+    print('loading models ...')
     model = SentenceTransformer('dangvantuan/sentence-camembert-large')
+    print('connect to db and vectorize jobs ...')
     client = MongoClient(l)
     db = client['tunisie-tn-jobs']
     rtmc = getRTMC()
     rtmc_jobs_vectors = vectorizeJobs()
+    print('indexing vectors jobs ...')
     index = nmslib.init(method='hnsw', space='cosinesimil')
     index.addDataPointBatch(rtmc_jobs_vectors)
     index.createIndex({'post': 2}, print_progress=True)
-
+    print('API Ready !!!')
     uvicorn.run(app, host='0.0.0.0',port = 80)
