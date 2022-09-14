@@ -38,25 +38,22 @@ def sim_jobs(input : Input):
 @app.get('/normalize-tunisie-rtmc')
 def normalize_tunisie_rtmc():
     while True:
-        cur = db.find_one({'config_is_normalized' : False, 'config_normalization_processing' : False})
-        offer = 0
-        for c in cur:
-            offer = c
-        if offer != 0 :
+        offer = db.offers.find_one({'config_is_normalized' : {'$ne': True}, 'config_normalization_processing' :{'$ne': True}})
+        if offer :
             title = offer['title']
             id = offer['_id']
-            cur = db.update_one({'_id': id}, {'$set':{'config_normalization_processing' : True}})
+            cur = db.offers.update_one({'_id': id}, {'$set':{'config_normalization_processing' : True}})
             # normalize offer return id job_designation degre
             ids, dis = get_cos_sim(title, model, index, 1)
             res = format_res(ids, dis, rtmc)
             if len(res):
-                rtmc_job_designation_id,rtmc_job_designation_title,config_normalized_degre=res[0]
+                rtmc_job_designation_id,rtmc_metier_id,rtmc_job_designation_title,config_normalized_degre=res[0]
 
                 # update offer(rtmc_job_designation_id, degre, is_normalized = True)
-                cur = db.update_one({'_id': id}, {'$set':{'config_normalization_processing' : False, 'config_is_normalized' : True, 'rtmc_job_id': rtmc_job_designation_id, 'config_normalized_degre': config_normalized_degre}})
+                cur = db.offers.update_one({'_id': id}, {'$set':{'config_normalization_processing' : False, 'config_is_normalized' : True, 'rtmc_appelation_id': rtmc_job_designation_id, 'rtmc_metier_id': rtmc_metier_id, 'rtmc_score': config_normalized_degre}})
             else:
                 # in case there is a normalization pb update and don't set rtmc_job_id
-                cur = db.update_one({'_id': id}, {'$set':{'config_normalization_processing' : False, 'config_is_normalized' : True}})
+                cur = db.offers.update_one({'_id': id}, {'$set':{'config_normalization_processing' : False, 'config_is_normalized' : True, 'rtmc_appelation_id': None, 'rtmc_metier_id': None, 'rtmc_score': -1}})
         else:
             time.sleep(300)
     return ''
@@ -65,9 +62,6 @@ def normalize_tunisie_rtmc():
 
 def getRTMC():
     rtmc_jobs_appellations = []
-    cur_rtmc_jobs = db.rtmcjobs.find({})
-    for job in cur_rtmc_jobs:
-        rtmc_jobs_appellations.append(job)
     cur_rtmc_appellations = db.rtmcappelations.find({})
     for appellation in cur_rtmc_appellations:
         rtmc_jobs_appellations.append(appellation)
@@ -85,7 +79,7 @@ def get_cos_sim(text, model, index, k):
 def format_res(ids, dis, rtmc):
     formated_res = []
     for i in range(len(ids)):
-        formated_res.append([str(rtmc[ids[i]]['_id']), rtmc[ids[i]]['name'], dis[i]])
+        formated_res.append([str(rtmc[ids[i]]['_id']), str(rtmc[ids[i]]['rtmc_job_id']), rtmc[ids[i]]['name'], dis[i]])
     return formated_res
 
 if __name__ == '__main__':
