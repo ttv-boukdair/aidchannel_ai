@@ -45,7 +45,7 @@ def normalize_tunisie_rtmc():
             cur = db.offers.update_one({'_id': id}, {'$set':{'config_normalization_processing' : True}})
             # normalize offer return id job_designation degre
             ids, dis = get_cos_sim(title, model, index, 1)
-            res = format_res(ids, dis, rtmc)
+            res = format_res_id(ids, dis, rtmc)
             if len(res):
                 rtmc_job_designation_id,rtmc_metier_id,rtmc_job_designation_title,config_normalized_degre=res[0]
 
@@ -81,7 +81,11 @@ def format_res(ids, dis, rtmc):
     for i in range(len(ids)):
         formated_res.append([str(rtmc[ids[i]]['_id']), str(rtmc[ids[i]]['rtmc_job_id']), rtmc[ids[i]]['name'], dis[i]])
     return formated_res
-
+def format_res_id(ids, dis, rtmc):
+    formated_res = []
+    for i in range(len(ids)):
+        formated_res.append([rtmc[ids[i]]['_id'], rtmc[ids[i]]['rtmc_job_id'], rtmc[ids[i]]['name'], dis[i]])
+    return formated_res
 if __name__ == '__main__':
     print('loading models ...')
     model = SentenceTransformer('dangvantuan/sentence-camembert-large')
