@@ -37,12 +37,19 @@ def sim_jobs(input : Input):
 
 @app.get('/normalize-tunisie-rtmc')
 def normalize_tunisie_rtmc():
+    count_offer = 0
+    max_offer_to_proccess_before_sleep = 50
+    sleep_if_no_offer = 15
+    sleep_btewheen_max_offer_to_proccess = 1
     while True:
-        offer = db.offers.find_one({'config_is_normalized' : {'$ne': True}, 'config_normalization_processing' :{'$ne': True}})
+        if count_offer >= max_offer_to_proccess_before_sleep:
+            time.sleep(60 * sleep_btewheen_max_offer_to_proccess)
+            count_offer = 0
+        offer = db.offers.find_one({'config_is_normalized' : {'$ne': True}})
         if offer :
             title = offer['title']
             id = offer['_id']
-            cur = db.offers.update_one({'_id': id}, {'$set':{'config_normalization_processing' : True}})
+            # cur = db.offers.update_one({'_id': id}, {'$set':{'config_normalization_processing' : True}})
             # normalize offer return id job_designation degre
             ids, dis = get_cos_sim(title, model, index, 1)
             res = format_res_id(ids, dis, rtmc)
@@ -50,12 +57,13 @@ def normalize_tunisie_rtmc():
                 rtmc_job_designation_id,rtmc_metier_id,rtmc_job_designation_title,config_normalized_degre=res[0]
 
                 # update offer(rtmc_job_designation_id, degre, is_normalized = True)
-                cur = db.offers.update_one({'_id': id}, {'$set':{'config_normalization_processing' : False, 'config_is_normalized' : True, 'rtmc_appelation_id': rtmc_job_designation_id, 'rtmc_metier_id': rtmc_metier_id, 'rtmc_score': config_normalized_degre}})
+                cur = db.offers.update_one({'_id': id}, {'$set':{ 'config_is_normalized' : True, 'rtmc_appelation_id': rtmc_job_designation_id, 'rtmc_metier_id': rtmc_metier_id, 'rtmc_score': config_normalized_degre}})
             else:
                 # in case there is a normalization pb update and don't set rtmc_job_id
-                cur = db.offers.update_one({'_id': id}, {'$set':{'config_normalization_processing' : False, 'config_is_normalized' : True, 'rtmc_appelation_id': None, 'rtmc_metier_id': None, 'rtmc_score': -1}})
+                cur = db.offers.update_one({'_id': id}, {'$set':{ 'config_is_normalized' : True, 'rtmc_appelation_id': None, 'rtmc_metier_id': None, 'rtmc_score': -1}})
+            count_offer += 1
         else:
-            time.sleep(300)
+            time.sleep(sleep_if_no_offer * 60)
     return ''
 
 
