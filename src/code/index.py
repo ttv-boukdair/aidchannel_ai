@@ -206,7 +206,7 @@ def get_skills_2(text, df_noise, max_skills = 100):
       print(sent)
       continue
     sents.append(sent.text)
-    ids, distances = get_cos_sim(sent.text, model, index_competences, )
+    ids, distances = get_cos_sim(sent.text, model, index_competences, top_k_sents)
     sent_skills = sent_skills + format_res_skills(ids, distances, competences)
   sent_skills = sorted(sent_skills, key=lambda tup: tup[2])
   return {'text': text, 'sents': sents,'competences': sent_skills[:max_skills]}
