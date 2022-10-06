@@ -10,6 +10,7 @@ from pymongo import MongoClient
 import time
 import spacy
 import pandas as pd
+import os
 l = "mongodb://tunisie-tn-jobs:gn!%40Qg%5EFH94MW%5E5Q7me%24@51.77.134.195:29098/tunisie-tn-jobs?authSource=test&readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false"
 
 DATA_PATH = '/www/data/'
@@ -210,7 +211,7 @@ def noise_person(text, df_noise):
 
 if __name__ == '__main__':
     print('loading models ...')
-    df_noise = pd.read_csv('NoiseAction.csv')
+    df_noise = pd.read_csv(os.path.abspath('NoiseAction.csv'))
     model = SentenceTransformer('dangvantuan/sentence-camembert-large')
     print('connect to db and vectorize jobs ...')
     nlp = spacy.load('fr_dep_news_trf')
