@@ -9,6 +9,7 @@ import nmslib
 from pymongo import MongoClient
 import time
 import spacy
+import pandas as pd
 l = "mongodb://tunisie-tn-jobs:gn!%40Qg%5EFH94MW%5E5Q7me%24@51.77.134.195:29098/tunisie-tn-jobs?authSource=test&readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false"
 
 DATA_PATH = '/www/data/'
