@@ -156,7 +156,6 @@ def get_skills_1(text):
         return {'text': text, 'competences': format_res_skills(ids, dis, competences)}
     except Exception as e:
         print(e)
-        print(j)
         return {'text': text, 'competences': []}
 
 def get_skills_2(text, df_noise, max_skills = 100):
@@ -170,7 +169,7 @@ def get_skills_2(text, df_noise, max_skills = 100):
       continue
     sents.append(sent.text)
     ids, distances = get_cos_sim(sent.text, model, index_competences, 3)
-    sent_skills = sent_skills + format_res(ids, distances, competences)
+    sent_skills = sent_skills + format_res_skills(ids, distances, competences)
   sent_skills = sorted(sent_skills, key=lambda tup: tup[2])
   return {'text': text, 'sents': sents,'competences': sent_skills[:max_skills]}
 
