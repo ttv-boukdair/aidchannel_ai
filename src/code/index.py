@@ -99,6 +99,39 @@ def normalize_tunisie_rtmc():
             time.sleep(sleep_if_no_offer * 60)
     return ''
 
+@app.get('/normalize-tunisie-skills')
+def normalize_tunisie_skills():
+    # processing parameters
+    count_offer = 0
+    max_offer_to_proccess_before_sleep = 50
+    max_skills = 15
+    sleep_btewheen_max_offer_to_proccess = 1
+    while True:
+        if count_offer >= max_offer_to_proccess_before_sleep:
+            time.sleep(60 * sleep_btewheen_max_offer_to_proccess)
+            count_offer = 0
+        offer = db.offers.find_one({'config_is_skill_normalized' : {'$ne': True}})
+        if offer :
+            title = offer['title']
+            id = offer['_id']
+            description = offer['description']
+            text = title+' \n '+description
+            if sentsLength(nlp(text)) <= 3:
+                res = get_skills_1(text)
+            else:
+                res = get_skills_2(text, df_noise, max_skills)
+            if len(res):
+                rtmc_skills_id=[s[0] for s in res['competences']]
+                # update offer(rtmc_job_designation_id, degre, is_normalized = True)
+                cur = db.offers.update_one({'_id': id}, {'$set':{ 'config_is_skill_normalized' : True, 'rtmc_skills_id': rtmc_skills_id}})
+            else:
+                # in case there is a normalization pb update and don't set rtmc_job_id
+                cur = db.offers.update_one({'_id': id}, {'$set':{ 'config_is_skill_normalized' : True, 'rtmc_skills_id': None}})
+            count_offer += 1
+        else:
+            time.sleep(sleep_if_no_offer * 60)
+    return ''
+
 
 
 def getRTMC():
@@ -147,7 +180,7 @@ def format_res_skills(ids, dis, competences, deg = 0.5):
     for i in range(len(ids)):
         if dis[i] >= deg:
           break
-        formated_res.append([competences[ids[i]]['code_ogr'], competences[ids[i]]['name'], dis[i]])
+        formated_res.append([competences[ids[i]]['_id'], competences[ids[i]]['code_ogr'], competences[ids[i]]['name'], dis[i]])
     return formated_res
 
 def get_skills_1(text):
@@ -159,16 +192,21 @@ def get_skills_1(text):
         return {'text': text, 'competences': []}
 
 def get_skills_2(text, df_noise, max_skills = 100):
+  # skills for all description 
   sent_skills = []
+  # sentence chunks
   sents = []
+  # spacy camembert pipeline tags, ner, dep ... etc
   doc = nlp(text)
+  # top skills by chunks
+  top_k_sents = 3
   for sent in doc.sents:
     noise = noise_person(sent, df_noise)
     if noise:
       print(sent)
       continue
     sents.append(sent.text)
-    ids, distances = get_cos_sim(sent.text, model, index_competences, 3)
+    ids, distances = get_cos_sim(sent.text, model, index_competences, )
     sent_skills = sent_skills + format_res_skills(ids, distances, competences)
   sent_skills = sorted(sent_skills, key=lambda tup: tup[2])
   return {'text': text, 'sents': sents,'competences': sent_skills[:max_skills]}
