@@ -153,7 +153,7 @@ def format_res_skills(ids, dis, competences, deg = 0.5):
 def get_skills_1(text):
     try:
         ids, distances = get_cos_sim(text, model, index_competences, 10)
-        return {'text': text, 'competences': format_res_skills(ids, dis, competences)}
+        return {'text': text, 'competences': format_res_skills(ids, distances, competences)}
     except Exception as e:
         print(e)
         return {'text': text, 'competences': []}
