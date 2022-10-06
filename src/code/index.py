@@ -210,7 +210,7 @@ def noise_person(text, df_noise):
 
 if __name__ == '__main__':
     print('loading models ...')
-    df_noise = pd.read_csv('./data/NoiseAction.csv')
+    df_noise = pd.read_csv('NoiseAction.csv')
     model = SentenceTransformer('dangvantuan/sentence-camembert-large')
     print('connect to db and vectorize jobs ...')
     nlp = spacy.load('fr_dep_news_trf')
