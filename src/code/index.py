@@ -103,7 +103,7 @@ def normalize_tunisie_rtmc():
 def normalize_tunisie_skills():
     # processing parameters
     count_offer = 0
-    max_offer_to_proccess_before_sleep = 50
+    max_offer_to_proccess_before_sleep = 500
     max_skills = 15
     sleep_btewheen_max_offer_to_proccess = 1
     while True:
