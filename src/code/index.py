@@ -114,12 +114,19 @@ def normalize_tunisie_skills():
         if offer :
             title = offer['title']
             id = offer['_id']
+            res = []
             description = offer['description']
             text = title+' \n '+description
             if sentsLength(nlp(text)) <= 3:
-                res = get_skills_1(text)
+                try:
+                    res = get_skills_1(text)
+                except:
+                    pass
             else:
-                res = get_skills_2(text, df_noise, max_skills)
+                try:
+                    res = get_skills_2(text, df_noise, max_skills)
+                except:
+                    pass
             if len(res):
                 rtmc_skills_id=[s[0] for s in res['competences']]
                 # update offer(rtmc_job_designation_id, degre, is_normalized = True)
