@@ -14,6 +14,7 @@ import os
 l = "mongodb://tunisie-tn-jobs:gn!%40Qg%5EFH94MW%5E5Q7me%24@51.77.134.195:29098/tunisie-tn-jobs?authSource=test&readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false"
 
 DATA_PATH = '/www/data/'
+aneti_site='www.emploi.nat.tn'
 app = FastAPI(debug = True)
 app.add_middleware(
     CORSMiddleware,
@@ -29,44 +30,44 @@ class Input_k(BaseModel):
 
 @app.get('/')
 def hello():
-    return 'hello world'
+    return 'RTMC AI NORM'
 
-@app.post('/sim-jobs')
-def sim_jobs(input : Input):
-    req = jsonable_encoder(input)
-    text = req['text']
-    ids, dis = get_cos_sim(text, model, index, 10)
-    res = format_res(ids, dis, rtmc)
-    return res
+# @app.post('/sim-jobs')
+# def sim_jobs(input : Input):
+#     req = jsonable_encoder(input)
+#     text = req['text']
+#     ids, dis = get_cos_sim(text, model, index, 10)
+#     res = format_res(ids, dis, rtmc)
+#     return res
 
-@app.post('/sim-skills')
-def sim_skills(input : Input_k):
-    req = jsonable_encoder(input)
-    text = req['text']
-    k = int(req['k'])
-    if sentsLength(nlp(text)) <= 3:
-        res = get_skills_1(text)
-    else:
-        if k:
-            res = get_skills_2(text, df_noise, k)
-        else:
-            res = get_skills_2(text, df_noise)
-    return res
+# @app.post('/sim-skills')
+# def sim_skills(input : Input_k):
+#     req = jsonable_encoder(input)
+#     text = req['text']
+#     k = int(req['k'])
+#     if sentsLength(nlp(text)) <= 3:
+#         res = get_skills_1(text)
+#     else:
+#         if k:
+#             res = get_skills_2(text, df_noise, k)
+#         else:
+#             res = get_skills_2(text, df_noise)
+#     return res
 
-@app.post('/sim-skills-1')
-def sim_skills_1(input : Input_k):
-    req = jsonable_encoder(input)
-    text = req['text']
-    res = get_skills_1(text)
-    return res
+# @app.post('/sim-skills-1')
+# def sim_skills_1(input : Input_k):
+#     req = jsonable_encoder(input)
+#     text = req['text']
+#     res = get_skills_1(text)
+#     return res
 
-@app.post('/sim-skills-2')
-def sim_skills_2(input : Input_k):
-    req = jsonable_encoder(input)
-    text = req['text']
-    k = int(req['k'])
-    res = get_skills_2(text, df_noise, k)
-    return res
+# @app.post('/sim-skills-2')
+# def sim_skills_2(input : Input_k):
+#     req = jsonable_encoder(input)
+#     text = req['text']
+#     k = int(req['k'])
+#     res = get_skills_2(text, df_noise, k)
+#     return res
 
 @app.get('/normalize-tunisie-rtmc')
 def normalize_tunisie_rtmc():
@@ -117,7 +118,9 @@ def normalize_tunisie_skills():
             res = []
             description = offer['description']
             text = title+' \n '+description
-            if sentsLength(nlp(text)) <= 3:
+            if offer['website'] == aneti_site:
+                res = get_skills_2(text, df_noise, max_skills, 1)
+            elif sentsLength(nlp(text)) <= 3:
                 try:
                     res = get_skills_1(text)
                 except:
@@ -198,15 +201,13 @@ def get_skills_1(text):
         print(e)
         return {'text': text, 'competences': []}
 
-def get_skills_2(text, df_noise, max_skills = 100):
+def get_skills_2(text, df_noise, max_skills = 100, top_k_sents = 3):
   # skills for all description 
   sent_skills = []
   # sentence chunks
   sents = []
   # spacy camembert pipeline tags, ner, dep ... etc
   doc = nlp(text)
-  # top skills by chunks
-  top_k_sents = 3
   for sent in doc.sents:
     noise = noise_person(sent, df_noise)
     if noise:
