@@ -127,7 +127,7 @@ def normalize_tunisie_skills():
                     pass
             else:
                 try:
-                    res = get_skills_2(text, df_noise, max_skills)
+                    res = get_skills_2(text, df_noise, max_skills, 3)
                 except:
                     pass
             if len(res):
@@ -136,7 +136,7 @@ def normalize_tunisie_skills():
                 cur = db.offers.update_one({'_id': id}, {'$set':{ 'config_is_skill_normalized' : True, 'rtmc_skills_id': rtmc_skills_id}})
             else:
                 # in case there is a normalization pb update and don't set rtmc_job_id
-                cur = db.offers.update_one({'_id': id}, {'$set':{ 'config_is_skill_normalized' : True, 'rtmc_skills_id': None}})
+                cur = db.offers.update_one({'_id': id}, {'$set':{ 'config_is_skill_normalized' : True, 'rtmc_skills_id': []}})
             count_offer += 1
         else:
             time.sleep(sleep_if_no_offer * 60)
