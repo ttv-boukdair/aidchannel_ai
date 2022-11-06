@@ -119,7 +119,7 @@ def normalize_tunisie_skills():
             description = offer['description']
             text = title+' \n '+description
             if offer['website'] == aneti_site:
-                res = get_skills_2(text, df_noise, max_skills, 1)
+                res = get_skills_aneti(text, df_noise, max_skills, 1)
             elif sentsLength(nlp(text)) <= 3:
                 try:
                     res = get_skills_1(text)
