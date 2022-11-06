@@ -218,6 +218,22 @@ def get_skills_2(text, df_noise, max_skills = 100, top_k_sents = 3):
     sent_skills = sent_skills + format_res_skills(ids, distances, competences)
   sent_skills = sorted(sent_skills, key=lambda tup: tup[2])
   return {'text': text, 'sents': sents,'competences': sent_skills[:max_skills]}
+def get_skills_aneti(text, df_noise, max_skills = 100, top_k_sents = 1):
+  # skills for all description 
+  sent_skills = []
+  # sentence chunks
+  sents = text.split('\n')
+  # spacy camembert pipeline tags, ner, dep ... etc
+  for sent in sents:
+    noise = noise_person(nlp(sent), df_noise)
+    if noise:
+      print(sent)
+      continue
+    sents.append(sent)
+    ids, distances = get_cos_sim(sent, model, index_competences, top_k_sents)
+    sent_skills = sent_skills + format_res_skills(ids, distances, competences)
+  sent_skills = sorted(sent_skills, key=lambda tup: tup[2])
+  return {'text': text, 'sents': sents,'competences': sent_skills[:max_skills]}
 
 def sentsLength(doc):
     i = 0
