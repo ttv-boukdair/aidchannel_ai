@@ -226,7 +226,8 @@ def get_skills_aneti(text, df_noise, max_skills = 100, top_k_sents = 1):
   sents = text.split('\n')
   # spacy camembert pipeline tags, ner, dep ... etc
   for sent in sents:
-    noise = noise_person(nlp(sent), df_noise)
+    doc = nlp(sent)
+    noise = noise_person(doc, df_noise)
     if noise:
       print(sent)
       continue
