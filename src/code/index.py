@@ -105,6 +105,7 @@ def normalize_tunisie_skills():
     # processing parameters
     count_offer = 0
     max_offer_to_proccess_before_sleep = 500
+    sleep_if_no_offer = 15
     max_skills = 15
     sleep_btewheen_max_offer_to_proccess = 1
     while True:
@@ -117,23 +118,24 @@ def normalize_tunisie_skills():
             id = offer['_id']
             res = []
             description = offer['description']
-            text = title+' \n '+description
             if offer['website'] == aneti_site:
                 try:
+                    text = description
                     res = get_skills_aneti(text, df_noise, max_skills, 1)
                 except:
                     pass
             elif sentsLength(nlp(text)) <= 3:
                 try:
+                    text = title+' \n '+description
                     res = get_skills_1(text)
                 except:
                     pass
             else:
                 try:
+                    text = title+' \n '+description
                     res = get_skills_2(text, df_noise, max_skills, 3)
                 except:
                     pass
-            print(str(id), res)
             if len(res):
                 rtmc_skills_id=[s[0] for s in res['competences']]
                 # update offer(rtmc_job_designation_id, degre, is_normalized = True)
@@ -235,7 +237,6 @@ def get_skills_aneti(text, df_noise, max_skills = 100, top_k_sents = 1):
     if noise:
       print(sent)
       continue
-    sents.append(sent)
     ids, distances = get_cos_sim(sent, model, index_competences, top_k_sents)
     sent_skills = sent_skills + format_res_skills(ids, distances, competences)
   sent_skills = sorted(sent_skills, key=lambda tup: tup[2])
