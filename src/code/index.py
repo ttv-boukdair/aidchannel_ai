@@ -238,7 +238,7 @@ def get_skills_aneti(text, df_noise, max_skills = 100, top_k_sents = 1):
       print(sent)
       continue
     ids, distances = get_cos_sim(sent, model, index_competences, top_k_sents)
-    sent_skills = sent_skills + format_res_skills(ids, distances, competences)
+    sent_skills = sent_skills + format_res_skills(ids, distances, competences, deg = 0.3)
   sent_skills = sorted(sent_skills, key=lambda tup: tup[2])
   return {'text': text, 'sents': sents,'competences': sent_skills[:max_skills]}
 
