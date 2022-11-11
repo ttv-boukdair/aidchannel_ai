@@ -11,6 +11,10 @@ import time
 import spacy
 import pandas as pd
 import os
+import numpy as np
+from numpy.linalg import norm
+from Levenshtein import distance
+
 l = "mongodb://tunisie-tn-jobs:gn!%40Qg%5EFH94MW%5E5Q7me%24@51.77.134.195:29098/tunisie-tn-jobs?authSource=test&readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false"
 
 DATA_PATH = '/www/data/'
@@ -31,6 +35,22 @@ class Input_k(BaseModel):
 @app.get('/')
 def hello():
     return 'RTMC AI NORM'
+
+@app.post('/compare-sim')
+def compare_sim(input : Input):
+    req = jsonable_encoder(input)
+    text1 = req['text1']
+    text2 = req['text2']
+    res = compare2texts(text1, text2)
+    return res
+
+@app.post('/compare-leneshtein')
+def compare_leneshtein(input : Input):
+    req = jsonable_encoder(input)
+    text1 = req['text1']
+    text2 = req['text2']
+    res = compare2texts_levenshtein(text1, text2)
+    return res
 
 # @app.post('/sim-jobs')
 # def sim_jobs(input : Input):
@@ -148,6 +168,19 @@ def normalize_tunisie_skills():
             time.sleep(sleep_if_no_offer * 60)
     return ''
 
+
+def compare2texts_sim(text1, text2):
+    A = model.encode(text1)
+    B = model.encode(text2)
+    cosine = 1 - np.dot(A,B)/(norm(A)*norm(B))
+    return cosine
+
+def compare2texts_levenshtein(text1, text2):
+    A = text1
+    B = text2
+    lensum = len(A) + len(B)
+    ratio = 1 - (distance(A, B)/lensum)
+    return ratio
 
 
 def getRTMC():
