@@ -31,13 +31,16 @@ class Input(BaseModel):
 class Input_k(BaseModel):
     text: str
     k: int
+class Input_compare(BaseModel):
+    text1: str
+    text2: str
 
 @app.get('/')
 def hello():
     return 'RTMC AI NORM'
 
 @app.post('/compare-sim')
-def compare_sim(input : Input):
+def compare_sim(input : Input_compare):
     req = jsonable_encoder(input)
     text1 = req['text1']
     text2 = req['text2']
@@ -45,7 +48,7 @@ def compare_sim(input : Input):
     return res
 
 @app.post('/compare-leneshtein')
-def compare_leneshtein(input : Input):
+def compare_leneshtein(input : Input_compare):
     req = jsonable_encoder(input)
     text1 = req['text1']
     text2 = req['text2']
