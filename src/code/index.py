@@ -44,7 +44,7 @@ def compare_sim(input : Input_compare):
     req = jsonable_encoder(input)
     text1 = req['text1']
     text2 = req['text2']
-    res = compare2texts(text1, text2)
+    res = compare2texts_sim(text1, text2)
     return res
 
 @app.post('/compare-leneshtein')
