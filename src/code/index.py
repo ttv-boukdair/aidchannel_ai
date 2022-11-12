@@ -175,14 +175,14 @@ def normalize_tunisie_skills():
 def compare2texts_sim(text1, text2):
     A = model.encode(text1)
     B = model.encode(text2)
-    cosine = 1 - np.dot(A,B)/(norm(A)*norm(B))
+    cosine = np.dot(A,B)/(norm(A)*norm(B))
     return cosine
 
 def compare2texts_levenshtein(text1, text2):
     A = text1
     B = text2
     lensum = len(A) + len(B)
-    ratio = 1 - (distance(A, B)/lensum)
+    ratio = (distance(A, B)/lensum)
     return ratio
 
 
