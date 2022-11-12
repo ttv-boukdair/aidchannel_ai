@@ -176,7 +176,7 @@ def compare2texts_sim(text1, text2):
     A = model.encode(text1)
     B = model.encode(text2)
     cosine = np.dot(A,B)/(norm(A)*norm(B))
-    return cosine
+    return cosine - 1 + 1
 
 def compare2texts_levenshtein(text1, text2):
     A = text1
