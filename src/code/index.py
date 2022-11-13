@@ -141,6 +141,7 @@ def normalize_tunisie_skills():
             id = offer['_id']
             res = []
             description = offer['description']
+            text = title+' \n '+description
             if offer['website'] == aneti_site:
                 try:
                     text = description
