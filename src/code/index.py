@@ -14,6 +14,7 @@ import os
 import numpy as np
 from numpy.linalg import norm
 from Levenshtein import distance
+from spellchecker import SpellChecker
 
 l = "mongodb://tunisie-tn-jobs:gn!%40Qg%5EFH94MW%5E5Q7me%24@51.77.134.195:29098/tunisie-tn-jobs?authSource=test&readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false"
 
@@ -91,6 +92,24 @@ def compare_leneshtein(input : Input_compare):
 #     k = int(req['k'])
 #     res = get_skills_2(text, df_noise, k)
 #     return res
+
+@app.get('/correct-titles')
+def correct_titles():
+    count_offer = 0
+    sleep_if_no_offer = 5
+    while True:
+        offer = db.offers.find_one({'is_title_corrected': {'$ne': True}})
+        if offer :
+            title = offer['title']
+            id = offer['_id']
+            special_char = '�'
+            if special_char in title:
+                db.offers.update_one({'_id': offer['_id']}, {'$set': {'title_corrected': title_correction(offer['title']), 'is_title_corrected': True}})
+            else:
+                db.offers.update_one({'_id': offer['_id']}, {'$set': {'is_title_corrected': True}})
+        else:
+            time.sleep(sleep_if_no_offer * 60)
+    return ''
 
 @app.get('/normalize-tunisie-rtmc')
 def normalize_tunisie_rtmc():
@@ -317,8 +336,22 @@ def noise_person(text, df_noise):
       return True
   return False
 
+def title_correction(text):
+  text = text.lower().replace('�','_')
+  words = spell_fr.split_words(text)
+  misspelled = spell_fr.unknown(words)
+  for word in misspelled:
+   if '_' in word:
+     new_word = spell_fr.correction(word)
+     try:
+       text = text.replace(word, new_word)
+     except:
+       text = text.replace(word, word.replace('_','e'))
+  return text
+
 if __name__ == '__main__':
     print('loading models ...')
+    spell_fr = SpellChecker(language='fr')
     df_noise = pd.read_csv('/www/code/NoiseAction.csv')
     model = SentenceTransformer('dangvantuan/sentence-camembert-large')
     print('connect to db and vectorize jobs ...')

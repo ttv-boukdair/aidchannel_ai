@@ -27,5 +27,6 @@ RUN python3 -m pip install protobuf==3.20.1
 RUN python3 -m pip install psycopg2-binary
 RUN python3 -m pip install pymongo[srv]
 RUN python3 -m pip install python-Levenshtein
+RUN python3 -m pip install pyspellchecker
 COPY ./src /www/
 CMD ["python3","/www/code/index.py"]
