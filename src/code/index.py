@@ -252,7 +252,7 @@ def format_res_skills(ids, dis, competences, deg = 0.5):
     for i in range(len(ids)):
         if dis[i] >= deg:
           break
-        formated_res.append([competences[ids[i]]['_id'], competences[ids[i]]['code_ogr'], competences[ids[i]]['name'], dis[i]])
+        formated_res.append([competences[ids[i]]['_id'], competences[ids[i]]['name'], dis[i]])
     return formated_res
 
 def get_skills_1(text):
