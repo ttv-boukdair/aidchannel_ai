@@ -20,7 +20,7 @@ RUN python3 -m pip install requests
 RUN python3 -m pip install pandas
 RUN python3 -m pip install python-dotenv
 # RUN python3 -m pip install pymongo[srv]
-RUN python3 -m pip install spacy
+RUN python3 -m pip install spacy==3.6.0
 RUN python3 -m spacy download fr_dep_news_trf
 RUN python3 -m pip install pytextrank
 RUN python3 -m pip install protobuf==3.20.1
