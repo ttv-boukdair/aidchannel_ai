@@ -1,5 +1,7 @@
 FROM ubuntu:20.04
-
+# Set environment variables to make tzdata install non-interactive
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=America/New_York
 # Ensure the package lists are updated
 RUN apt-get update -y && apt-get upgrade -y
 
