@@ -1,9 +1,10 @@
 FROM ubuntu:20.04
 
-RUN apt-get update -y
-RUN apt update -y
+# Ensure the package lists are updated
+RUN apt-get update -y && apt-get upgrade -y
+
 RUN apt-get install -y build-essential
-RUN apt-get install -y python3.11
+RUN apt-get install -y python3.10 --fix-missing
 RUN apt install -y protobuf-compiler
 WORKDIR /www
 RUN apt install -y python3-pip
