@@ -3,15 +3,15 @@ FROM ubuntu:20.04
 RUN apt-get update -y
 RUN apt update -y
 RUN apt-get install -y build-essential
-RUN apt-get install -y python3.7
+RUN apt-get install -y python3.10
 RUN apt install -y protobuf-compiler
 WORKDIR /www
 RUN apt install -y python3-pip
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install pip setuptools wheel
-RUN python3 -m pip install transformers==4.36.0
+RUN python3 -m pip install transformers
 RUN python3 -m pip install sentencepiece
-RUN python3 -m pip install sentence-transformers==2.7.0
+RUN python3 -m pip install sentence-transformers
 RUN python3 -m pip install fastapi
 RUN python3 -m pip install uvicorn
 RUN python3 -m pip install nmslib
