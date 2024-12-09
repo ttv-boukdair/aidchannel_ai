@@ -11,10 +11,13 @@ RUN apt-get update -y && apt-get upgrade -y
 RUN apt-get install -y software-properties-common curl && \
     add-apt-repository ppa:deadsnakes/ppa -y && \
     apt-get update -y && \
-    apt-get install -y python3.10 python3.10-distutils python3-pip build-essential protobuf-compiler
+    apt-get install -y python3.10 python3.10-distutils build-essential protobuf-compiler
 
-# Upgrade pip, setuptools, and wheel for Python 3.10
-RUN python3.10 -m pip install --upgrade pip setuptools wheel
+# Use get-pip.py to install pip
+RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
+
+# Upgrade setuptools and wheel
+RUN python3.10 -m pip install --upgrade setuptools wheel
 
 # Install required Python packages
 RUN python3.10 -m pip install \
