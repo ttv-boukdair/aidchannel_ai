@@ -1,3 +1,9 @@
+import os
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["NUMEXPR_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -10,7 +16,6 @@ from pymongo import MongoClient
 import time
 import spacy
 import pandas as pd
-import os
 import numpy as np
 from numpy.linalg import norm
 from Levenshtein import distance
@@ -356,7 +361,7 @@ if __name__ == '__main__':
     model = SentenceTransformer('dangvantuan/sentence-camembert-large')
     print('connect to db and vectorize jobs ...')
     nlp = spacy.load('fr_dep_news_trf')
-    client = MongoClient(l)
+    client = MongoClient(l, maxPoolSize=20)
     db = client['tunisie-tn-jobs']
     rtmc = getRTMC()
     rtmc_jobs_vectors = vectorizeJobs()
