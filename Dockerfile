@@ -25,7 +25,7 @@ RUN python3 -m spacy download fr_dep_news_trf
 RUN python3 -m pip install pytextrank
 RUN python3 -m pip install protobuf==3.20.1
 RUN python3 -m pip install psycopg2-binary
-RUN python3 -m pip install pymongo[srv]
+RUN python3 -m pip install pymongo[srv]==4.6.1
 RUN python3 -m pip install python-Levenshtein
 RUN python3 -m pip install pyspellchecker
 COPY ./src /www/
