@@ -12,7 +12,7 @@ WORKDIR /www
 RUN apt install -y python3-pip
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install pip setuptools wheel
-RUN python3 -m pip install transformers==4.30.2
+RUN python3 -m pip install transformers==4.47.0
 RUN python3 -m pip install sentencepiece
 RUN python3 -m pip install sentence-transformers
 RUN python3 -m pip install fastapi
