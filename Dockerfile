@@ -12,9 +12,9 @@ WORKDIR /www
 RUN apt install -y python3-pip
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install pip setuptools wheel
-RUN python3 -m pip install transformers
+RUN python3 -m pip install -U transformers
 RUN python3 -m pip install sentencepiece
-RUN python3 -m pip install sentence-transformers
+RUN python3 -m pip install -U sentence-transformers
 RUN python3 -m pip install fastapi
 RUN python3 -m pip install uvicorn
 RUN python3 -m pip install nmslib
