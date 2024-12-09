@@ -48,7 +48,7 @@ class Input_compare(BaseModel):
     text2: str
 
 # MongoDB Client with Connection Pooling
-client = MongoClient(l, maxPoolSize=20)
+client = MongoClient(l, maxPoolSize=5)
 db = client['tunisie-tn-jobs']
 
 # Thread Locks for Shared Resources
