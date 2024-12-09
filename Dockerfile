@@ -29,4 +29,8 @@ RUN python3 -m pip install pymongo[srv]
 RUN python3 -m pip install python-Levenshtein
 RUN python3 -m pip install pyspellchecker
 COPY ./src /www/
+# Set OpenBLAS threading environment variables
+ENV OPENBLAS_NUM_THREADS=1
+ENV OMP_NUM_THREADS=1
+
 CMD ["python3","/www/code/index.py"]
