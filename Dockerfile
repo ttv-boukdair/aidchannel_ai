@@ -8,6 +8,8 @@ RUN apt-get update -y && apt-get upgrade -y
 RUN apt-get install -y build-essential
 RUN apt-get install -y python3.10 --fix-missing
 RUN apt install -y protobuf-compiler
+RUN python3 --version
+RUN python --version
 WORKDIR /www
 RUN apt install -y python3-pip
 RUN python3 -m pip install --upgrade pip
