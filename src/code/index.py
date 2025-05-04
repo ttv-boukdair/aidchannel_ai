@@ -210,6 +210,8 @@ def getRTMC():
     cur_rtmc_appellations = db.rtmcappelations.find({})
     for appellation in cur_rtmc_appellations:
         rtmc_jobs_appellations.append(appellation)
+    # remove duplicates with same _id
+    rtmc_jobs_appellations = {v['_id']:v for v in rtmc_jobs_appellations}.values()
     return rtmc_jobs_appellations
 
 def vectorizeJobs():
@@ -360,7 +362,8 @@ if __name__ == '__main__':
     rtmc = getRTMC()
     rtmc_jobs_vectors = vectorizeJobs()
     print('indexing vectors jobs ...')
-    competences = getRTMCSkills()
+    comptences = []
+    # competences = getRTMCSkills()
     competences_vectors = vectorizeSkills(competences)
     index = nmslib.init(method='hnsw', space='cosinesimil')
     index.addDataPointBatch(rtmc_jobs_vectors)
