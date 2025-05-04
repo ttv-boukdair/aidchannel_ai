@@ -362,7 +362,7 @@ if __name__ == '__main__':
     rtmc = getRTMC()
     rtmc_jobs_vectors = vectorizeJobs()
     print('indexing vectors jobs ...')
-    comptences = []
+    competences = []
     # competences = getRTMCSkills()
     competences_vectors = vectorizeSkills(competences)
     index = nmslib.init(method='hnsw', space='cosinesimil')
