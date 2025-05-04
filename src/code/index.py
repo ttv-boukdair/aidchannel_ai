@@ -55,13 +55,13 @@ def compare_leneshtein(input : Input_compare):
     res = compare2texts_levenshtein(text1, text2)
     return res
 
-# @app.post('/sim-jobs')
-# def sim_jobs(input : Input):
-#     req = jsonable_encoder(input)
-#     text = req['text']
-#     ids, dis = get_cos_sim(text, model, index, 10)
-#     res = format_res(ids, dis, rtmc)
-#     return res
+@app.post('/sim-jobs')
+def sim_jobs(input : Input):
+    req = jsonable_encoder(input)
+    text = req['text']
+    ids, dis = get_cos_sim(text, model, index, 10)
+    res = format_res(ids, dis, rtmc)
+    return res
 
 # @app.post('/sim-skills')
 # def sim_skills(input : Input_k):
