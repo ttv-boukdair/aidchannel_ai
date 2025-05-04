@@ -207,11 +207,14 @@ def compare2texts_levenshtein(text1, text2):
 
 def getRTMC():
     rtmc_jobs_appellations = []
+    rtmc_jobs_appellations_ids = []
     cur_rtmc_appellations = db.rtmcappelations.find({})
     for appellation in cur_rtmc_appellations:
+        if appellation['_id'] in rtmc_jobs_appellations_ids:
+            continue
         rtmc_jobs_appellations.append(appellation)
+        rtmc_jobs_appellations_ids.append(appellation['_id'])
     # remove duplicates with same _id
-    rtmc_jobs_appellations = {v['_id']:v for v in rtmc_jobs_appellations}.values()
     return rtmc_jobs_appellations
 
 def vectorizeJobs():
@@ -362,7 +365,7 @@ if __name__ == '__main__':
     rtmc = getRTMC()
     rtmc_jobs_vectors = vectorizeJobs()
     print('indexing vectors jobs ...')
-    competences = []
+    comptences = []
     # competences = getRTMCSkills()
     competences_vectors = vectorizeSkills(competences)
     index = nmslib.init(method='hnsw', space='cosinesimil')
