@@ -210,10 +210,10 @@ def getRTMC():
     rtmc_jobs_appellations_ids = []
     cur_rtmc_appellations = db.rtmcappelations.find({})
     for appellation in cur_rtmc_appellations:
-        if appellation['_id'] in rtmc_jobs_appellations_ids:
+        if str(appellation['_id']) in rtmc_jobs_appellations_ids:
             continue
         rtmc_jobs_appellations.append(appellation)
-        rtmc_jobs_appellations_ids.append(appellation['_id'])
+        rtmc_jobs_appellations_ids.append(str(appellation['_id']))
     # remove duplicates with same _id
     return rtmc_jobs_appellations
 
