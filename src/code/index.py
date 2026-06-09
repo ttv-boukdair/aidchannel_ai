@@ -15,7 +15,7 @@ from numpy.linalg import norm
 from Levenshtein import distance
 from spellchecker import SpellChecker
 
-l = "mongodb://tunisie-tn-jobs:gn!%40Qg%5EFH94MW%5E5Q7me%24@51.77.134.195:29098/tunisie-tn-jobs?authSource=test&readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false"
+l = "mongodb://tunisie-tn-jobs:gn!%40Qg%5EFH94MW%5E5Q7me%24@mongo-jt1:27017,mongo-jt2:27017,mongo-med:27017/tunisie-tn-jobs?replicaSet=rs0"
 
 DATA_PATH = '/www/data/'
 aneti_site='www.emploi.nat.tn'
